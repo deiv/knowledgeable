@@ -28,26 +28,21 @@
 
 import { LitElement, html } from 'lit-element';
 
-import { default as TuiEditor } from '../../../generated-bundle/tui-editor-full.js';
-
-import mdTaskLists    from '../../../generated-bundle/markdown-it-task-lists.js';
-import mdPlantUml     from '../../../generated-bundle/markdown-it-plantuml.js';
-import mdAbbr         from '../../../generated-bundle/markdown-it-abbr.js';
-import mdAnchor       from '../../../generated-bundle/markdown-it-anchor.js';
-import mdRegex        from '../../../generated-bundle/markdown-it-regexp.js';
-import mdFontAwesome  from '../../../generated-bundle/markdown-it-fontawesome.js';
-import mdMark         from '../../../generated-bundle/markdown-it-mark.js';
-import mdSup          from '../../../generated-bundle/markdown-it-sup.js';
-import mdTocDoneRight from '../../../generated-bundle/markdown-it-toc-done-right.js';
-import mdContainer    from '../../../generated-bundle/markdown-it-container.js';
-import mdFootnote     from '../../../generated-bundle/markdown-it-footnote.js';
-//import mdImSize  from '../../../generated-bundle/markdown-it-imsize.js';
+import {
+    TuiEditor,
+    mdPlantUml,
+    mdAbbr,
+    mdAnchor,
+    mdRegex,
+    mdFontAwesome,
+    mdMark,
+    mdSup,
+    mdTocDoneRight,
+    mdContainer,
+    mdFootnote
+} from '../../../bundle/output/markdown-it-bundle.js';
 
 import { default as mdCharts } from 'markdown-it-chart/src/index.js';
-
-import '../../../generated-bundle/highlight.js';
-import '../../../generated-bundle/chart.js';
-
 
 export class MarkdownEditorElement extends LitElement {
 

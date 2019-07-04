@@ -3,5 +3,5 @@
 
 node_modules/
 
-generated-bundle/
+bundle/output/
 build/
