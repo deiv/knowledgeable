@@ -275,10 +275,10 @@ export class MarkdownEditorElement extends LitElement {
     updateCharts() {
         const charts = this.shadowRoot.querySelectorAll('.chartjs');
 
-        for(var i = 0;i < charts.length; i++){
+        for(var chart of charts) {
             new Chart(
-                charts[i].getContext('2d'),
-                JSON.parse(charts[i].innerHTML)
+                chart.getContext('2d'),
+                JSON.parse(chart.innerHTML)
             );
         }
     }
