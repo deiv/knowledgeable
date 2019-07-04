@@ -253,21 +253,23 @@ export class MarkdownEditorElement extends LitElement {
         const _this = this;
         const config = {
             attributes: false,
-            childList: true,
-            subtree: false
+            subtree: false,
+            childList: true
         };
 
         const callback = function(mutationsList, observer) {
             for(var mutation of mutationsList) {
                 if (mutation.type == 'childList') {
                     _this.updateCharts();
+
+                    /* something changed, stop looping */
+                    break;
                 }
             }
         };
 
         const observer = new MutationObserver(callback);
         observer.observe(previewElement, config);
-        //observer.disconnect();
     }
 
     updateCharts() {
