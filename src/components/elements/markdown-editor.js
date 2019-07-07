@@ -72,7 +72,8 @@ export class MarkdownEditorElement extends LitElement {
             <!-- XXX: 
             <link href="node_modules/@fortawesome/fontawesome-free/css/all.css" rel="stylesheet" />-->
             <link href="../../../node_modules/tui-editor/dist/tui-editor.css" rel="stylesheet" />
-            <link href="../../../node_modules/tui-editor/dist/tui-editor-contents.css" rel="stylesheet" />
+            <!--<link href="../../../node_modules/tui-editor/dist/tui-editor-contents.css" rel="stylesheet" />-->
+            <link href="../../../static/css/markdown-it-style.css" rel="stylesheet" />
             <link href="../../../node_modules/tui-color-picker/dist/tui-color-picker.css" rel="stylesheet" />
             <link href="../../../node_modules/codemirror/lib/codemirror.css" rel="stylesheet" />
             <link href="../../../node_modules/tui-chart/dist/tui-chart.css" rel="stylesheet" />
