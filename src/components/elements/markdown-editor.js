@@ -98,6 +98,11 @@ export class MarkdownEditorElement extends LitElement {
                     float: right;
                     overflow-x: auto;
                     overflow-y: scroll;
+                .tui-add-icon {
+                    background: url(../../../images/editor/add-icon.png);
+                    background-size: 14px 14px;
+                    background-repeat: no-repeat;
+                    background-position: 2px 2px;
                 }
             </style>
             
@@ -241,6 +246,7 @@ export class MarkdownEditorElement extends LitElement {
         });
 
         this.configurePreviewObserver();
+        this.initToolBar(this.editor);
     }
 
     configurePreviewObserver() {
@@ -268,6 +274,92 @@ export class MarkdownEditorElement extends LitElement {
         observer.observe(previewElement, config);
     }
 
+    initToolBar(editor) {
+        const name = 'addIcon';
+        const className = 'tui-add-icon';
+        const toolbar = editor.getUI().getToolbar();
+        const iconEventName = 'iconToolbarButtonClicked';
+
+
+        const toolbarInsertPosition = toolbar.getItems().length - 1;
+
+        editor.eventManager.addEventType(iconEventName);
+
+        toolbar.insertItem(toolbarInsertPosition, {
+            type: 'button',
+            options: {
+                name,
+                className,
+                event: iconEventName,
+                tooltip: 'Insertar icono'
+            }
+        });
+
+        toolbar.insertItem(toolbarInsertPosition + 1 , {
+            type: 'divider'
+        });
+
+        const colorSyntaxButtonIndex = toolbar.indexOfItem(name);
+        const {$el: $button} = toolbar.getItem(colorSyntaxButtonIndex);
+
+        const popup = editor.getUI().createPopup({
+            header: false,
+            title: false,
+            content: this.getIconsDialogMarkup(),
+            className: 'tui-popup-add-icon',
+            $target: editor.getUI().getToolbar().$el,
+            css: {
+                'width': 'auto',
+                'position': 'absolute'
+            }
+        });
+
+        editor.eventManager.listen('focus', () => {
+            popup.hide();
+        });
+
+        editor.eventManager.listen(iconEventName, () => {
+            if (popup.isShow()) {
+                popup.hide();
+                return;
+            }
+
+            const {
+                offsetTop,
+                offsetLeft
+            } = $button.get(0);
+
+            popup.$el.css({
+                top: offsetTop + $button.outerHeight(),
+                left: offsetLeft
+            });
+
+            editor.eventManager.emit('closeAllPopup');
+            popup.show();
+        });
+
+        editor.eventManager.listen('closeAllPopup', () => {
+            popup.hide();
+        });
+
+        const icons = this.shadowRoot.querySelectorAll('.icon-group-content div');
+        const iconClickCallBack = (event) => {
+            editor.insertText(event.target.textContent.trim());
+            popup.hide();
+        };
+
+        editor.eventManager.listen('removeEditor', () => {
+            colorPicker.off('selectColor');
+            // TODO: remove events
+            popup.remove();
+        });
+
+        icons.forEach(function(icon) {
+            icon.addEventListener('click', iconClickCallBack);
+        });
+    }
+
+
     updateCharts() {
         const charts = this.shadowRoot.querySelectorAll('.chartjs');
 
@@ -277,6 +369,66 @@ export class MarkdownEditorElement extends LitElement {
                 JSON.parse(chart.innerHTML)
             );
         }
+    }
+
+    getIconsDialogMarkup() {
+        return '<style>'
+            + '    .icon-group {padding-top: 6px;padding-bottom: 6px;}'
+            + '    .icon-group-header {display: flex;margin-top: 6px;margin-bottom: 8px;color: rgba(55, 53, 47, 0.6);font-size: 11px;line-height: 120%;user-select: none;text-transform: uppercase;letter-spacing: 1px;font-weight: 500;}'
+            + '    .icon-group-header-title {white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}'
+            + '    .icon-group-content {display: flex;flex-wrap: wrap;align-items: flex-start;background: transparent;padding: 0;margin-bottom: 1px;}'
+            + '    .icon-group-content div {cursor: pointer;user-select: none;display: flex;align-items: center;justify-content: center;border-radius: 3px;width: 32px;height: 32px;font-size: 24px;}'
+            + '</style>'
+            + '<div style="flex-grow: 1; height: 50vh; width: 50vh; overflow-y: scroll;">'
+            + '    <div class="icon-group">'
+            + '        <div class="icon-group-header"><div class="icon-group-header-title">people</div></div>'
+            + '        <div class="icon-group-content">'
+            + '            <div>�</div><div>😬</div><div>😁</div><div>😂</div><div>🤣</div><div>😃</div><div>😄</div><div>😅</div><div>😆</div><div>😇</div><div>😉</div><div>😊</div><div>🙂</div><div>🙃</div><div>😋</div><div>😌</div><div>😍</div><div>😘</div><div>😗</div><div>😙</div><div>😚</div><div>😜</div><div>😝</div><div>😛</div><div>🤑</div><div>🤓</div><div>😎</div><div>🤡</div><div>🤠</div><div>🤗</div><div>😏</div><div>😶</div><div>😐</div><div>😑</div><div>😒</div><div>🙄</div><div>🤔</div><div>🤥</div><div>😳</div><div>😞</div><div>😟</div><div>😠</div><div>😡</div><div>😔</div><div>😕</div><div>🙁</div><div>😣</div><div>😖</div><div>😫</div><div>😩</div><div>😤</div><div>😮</div><div>😱</div><div>😨</div><div>😰</div><div>😯</div><div>😦</div><div>😧</div><div>😢</div><div>😥</div><div>🤤</div><div>😪</div><div>😓</div><div>😭</div><div>😵</div><div>😲</div><div>🤐</div><div>🤢</div><div>🤧</div><div>😷</div><div>🤒</div><div>🤕</div><div>😴</div><div>💤</div><div>💩</div><div>😈</div><div>👿</div><div>👹</div><div>👺</div><div>💀</div><div>👻</div><div>👽</div><div>🤖</div><div>😺</div><div>😸</div><div>😹</div><div>😻</div><div>😼</div><div>😽</div><div>🙀</div><div>😿</div><div>😾</div><div>🙌</div><div>👏</div><div>👋</div><div>🤙</div><div>👍</div><div>👎</div><div>👊</div><div>✊</div><div>🤛</div><div>🤜</div><div>✌</div><div>👌</div><div>✋</div><div>🤚</div><div>👐</div><div>💪</div><div>🙏</div><div>🤝</div><div>☝</div><div>👆</div><div>👇</div><div>👈</div><div>👉</div><div>🖕</div><div>🖐</div><div>🤘</div><div>🤞</div><div>🖖</div><div>✍</div><div>🤳</div><div>💅</div><div>👄</div><div>👅</div><div>👂</div><div>👃</div><div>👁</div><div>👀</div><div>👤</div><div>👥</div><div>🗣</div><div>👶</div><div>👦</div><div>👧</div><div>👨</div><div>👩</div><div>👱</div><div>👴</div><div>👵</div><div>👲</div><div>👳</div><div>👮</div><div>👷</div><div>💂</div><div>🕵</div><div>👩&zwj;⚕️</div><div>👨&zwj;⚕️</div><div>👩&zwj;🌾</div><div>👨&zwj;🌾</div><div>👩&zwj;🍳</div><div>👨&zwj;🍳</div><div>👩&zwj;🎓</div><div>👨&zwj;🎓</div><div>👩&zwj;🎤</div><div>👨&zwj;🎤</div><div>👩&zwj;🏫</div><div>👨&zwj;🏫</div><div>👩&zwj;🏭</div><div>👨&zwj;🏭</div><div>👩&zwj;💻</div><div>👨&zwj;💻</div><div>👩&zwj;💼</div><div>👨&zwj;💼</div><div>👩&zwj;🔧</div><div>👨&zwj;🔧</div><div>👩&zwj;🔬</div><div>👨&zwj;🔬</div><div>👩&zwj;🎨</div><div>👨&zwj;🎨</div><div>👩&zwj;🚒</div><div>👨&zwj;🚒</div><div>👩&zwj;🚀</div><div>👨&zwj;🚀</div><div>🤶</div><div>🎅</div><div>👼</div><div>🤰</div><div>👸</div><div>🤴</div><div>👰</div><div>🤵</div><div>🏃</div><div>🚶</div><div>💃</div><div>🕺</div><div>👯</div><div>👫</div><div>👬</div><div>👭</div><div>🙇</div><div>🤦</div><div>🤷</div><div>💁</div><div>🙅</div><div>🙆</div><div>🙋</div><div>🙎</div><div>🙍</div><div>💇</div><div>💆</div><div>💑</div><div>👩&zwj;❤️&zwj;👩</div><div>👨&zwj;❤️&zwj;👨</div><div>💏</div><div>👩&zwj;❤️&zwj;💋&zwj;👩</div><div>👨&zwj;❤️&zwj;💋&zwj;👨</div><div>👪</div><div>👨&zwj;👩&zwj;👧</div><div>👨&zwj;👩&zwj;👧&zwj;👦</div><div>👨&zwj;👩&zwj;👦&zwj;👦</div><div>👨&zwj;👩&zwj;👧&zwj;👧</div><div>👩&zwj;👩&zwj;👦</div><div>👩&zwj;👩&zwj;👧</div><div>👩&zwj;👩&zwj;👧&zwj;👦</div><div>👩&zwj;👩&zwj;👦&zwj;👦</div><div>👩&zwj;👩&zwj;👧&zwj;👧</div><div>👨&zwj;👨&zwj;👦</div><div>👨&zwj;👨&zwj;👧</div><div>👨&zwj;👨&zwj;👧&zwj;👦</div><div>👨&zwj;👨&zwj;👦&zwj;👦</div><div>👨&zwj;👨&zwj;👧&zwj;👧</div><div>👩&zwj;👦</div><div>👩&zwj;👧</div><div>👩&zwj;👧&zwj;👦</div><div>👩&zwj;👦&zwj;👦</div><div>👩&zwj;👧&zwj;👧</div><div>👨&zwj;👦</div><div>👨&zwj;👧</div><div>👨&zwj;👧&zwj;👦</div><div>👨&zwj;👦&zwj;👦</div><div>👨&zwj;👧&zwj;👧</div><div>👚</div><div>👕</div><div>👖</div><div>👔</div><div>👗</div><div>👙</div><div>👘</div><div>💄</div><div>💋</div><div>👣</div><div>👠</div><div>👡</div><div>👢</div><div>👞</div><div>👟</div><div>👒</div><div>🎩</div><div>⛑</div><div>🎓</div><div>👑</div><div>🎒</div><div>👝</div><div>👛</div><div>👜</div><div>💼</div><div>👓</div><div>🕶</div><div>💍</div><div>🌂</div>'
+            + '        </div>'
+            + '    </div>'
+            + '    <div class="icon-group">'
+            + '        <div class="icon-group-header"><div class="icon-group-header-title">animals and nature</div></div>'
+            + '        <div class="icon-group-content">'
+            + '            <div>🐶</div><div>🐱</div><div>🐭</div><div>🐹</div><div>🐰</div><div>🦊</div><div>🐻</div><div>🐼</div><div>🐨</div><div>🐯</div><div>🦁</div><div>🐮</div><div>🐷</div><div>🐽</div><div>🐸</div><div>🦑</div><div>🐙</div><div>🦐</div><div>🐵</div><div>🦍</div><div>🙈</div><div>🙉</div><div>🙊</div><div>🐒</div><div>🐔</div><div>🐧</div><div>🐦</div><div>🐤</div><div>🐣</div><div>🐥</div><div>🦆</div><div>🦅</div><div>🦉</div><div>🦇</div><div>🐺</div><div>🐗</div><div>🐴</div><div>🦄</div><div>🐝</div><div>🐛</div><div>🦋</div><div>🐌</div><div>🐞</div><div>🐜</div><div>🕷</div><div>🦂</div><div>🦀</div><div>🐍</div><div>🦎</div><div>🐢</div><div>🐠</div><div>🐟</div><div>🐡</div><div>🐬</div><div>🦈</div><div>🐳</div><div>🐋</div><div>🐊</div><div>🐆</div><div>🐅</div><div>🐃</div><div>🐂</div><div>🐄</div><div>🦌</div><div>🐪</div><div>🐫</div><div>🐘</div><div>🦏</div><div>🐐</div><div>🐏</div><div>🐑</div><div>🐎</div><div>🐖</div><div>�</div><div>🐁</div><div>🐓</div><div>🦃</div><div>🕊</div><div>🐕</div><div>🐩</div><div>🐈</div><div>🐇</div><div>🐿</div><div>🐾</div><div>🐉</div><div>🐲</div><div>🌵</div><div>🎄</div><div>🌲</div><div>🌳</div><div>🌴</div><div>🌱</div><div>🌿</div><div>☘</div><div>🍀</div><div>🎍</div><div>🎋</div><div>🍃</div><div>🍂</div><div>🍁</div><div>🌾</div><div>🌺</div><div>🌻</div><div>🌹</div><div>🥀</div><div>🌷</div><div>🌼</div><div>🌸</div><div>💐</div><div>🍄</div><div>🌰</div><div>🎃</div><div>🐚</div><div>🕸</div><div>🌎</div><div>🌍</div><div>🌏</div><div>🌕</div><div>🌖</div><div>🌗</div><div>🌘</div><div>🌑</div><div>🌒</div><div>🌓</div><div>🌔</div><div>🌚</div><div>🌝</div><div>🌛</div><div>🌜</div><div>🌞</div><div>🌙</div><div>⭐</div><div>🌟</div><div>💫</div><div>✨</div><div>☄</div><div>️</div><div>🌤</div><div>⛅</div><div>🌥</div><div>🌦</div><div>☁️</div><div>🌧</div><div>⛈</div><div>🌩</div><div>⚡</div><div>🔥</div><div>💥</div><div>❄️</div><div>🌨</div><div>⛄</div><div>☃</div><div>🌬</div><div>💨</div><div>🌪</div><div>🌫</div><div>☂</div><div>☔</div><div>💧</div><div>💦</div><div>🌊</div>'
+            + '        </div>'
+            + '    </div>'
+            + '    <div class="icon-group">'
+            + '        <div class="icon-group-header"><div class="icon-group-header-title">food and drink</div></div>'
+            + '        <div class="icon-group-content">'
+            + '            <div>🍏</div><div>🍎</div><div>🍐</div><div>🍊</div><div>🍋</div><div>🍌</div><div>🍉</div><div>🍇</div><div>🍓</div><div>🍈</div><div>🍒</div><div>🍑</div><div>🍍</div><div>🥝</div><div>🥑</div><div>🍅</div><div>🍆</div><div>🥒</div><div>🥕</div><div>🌶</div><div>🥔</div><div>🌽</div><div>🍠</div><div>🥜</div><div>🍯</div><div>🥐</div><div>🍞</div><div>🥖</div><div>🧀</div><div>🥚</div><div>🥓</div><div>🥞</div><div>🍗</div><div>🍖</div><div>🍤</div><div>🍳</div><div>🍔</div><div>🍟</div><div>🥙</div><div>🌭</div><div>🍕</div><div>🍝</div><div>🌮</div><div>🌯</div><div>🥗</div><div>🥘</div><div>🍜</div><div>🍲</div><div>🍥</div><div>🍣</div><div>🍱</div><div>🍛</div><div>🍙</div><div>🍚</div><div>🍘</div><div>🍢</div><div>🍡</div><div>🍧</div><div>🍨</div><div>🍦</div><div>🍰</div><div>🎂</div><div>🍮</div><div>🍬</div><div>🍭</div><div>🍫</div><div>🍿</div><div>🍩</div><div>🍪</div><div>🥛</div><div>🍺</div><div>🍻</div><div>🥂</div><div>🍷</div><div>🥃</div><div>🍸</div><div>🍹</div><div>🍾</div><div>🍶</div><div>🍵</div><div>☕</div><div>🍼</div><div>🥄</div><div>🍴</div><div>🍽</div>'
+            + '        </div>'
+            + '    </div>'
+            + '    <div class="icon-group">'
+            + '        <div class="icon-group-header"><div class="icon-group-header-title">activity</div></div>'
+            + '        <div class="icon-group-content">'
+            + '            <div>⚽</div><div>🏀</div><div>🏈</div><div>⚾</div><div>🎾</div><div>🏐</div><div>🏉</div><div>🎱</div><div>⛳</div><div>🏌</div><div>🏓</div><div>🏸</div><div>🥅</div><div>🏒</div><div>🏑</div><div>🏏</div><div>🎿</div><div>⛷</div><div>🏂</div><div>🤺</div><div>⛸</div><div>🏹</div><div>🎣</div><div>🥊</div><div>🥋</div><div>🚣</div><div>🏊</div><div>🏄</div><div>🛀</div><div>⛹</div><div>🏋</div><div>🚴</div><div>🚵</div><div>🏇</div><div>🕴</div><div>🏆</div><div>🎽</div><div>🏅</div><div>🎖</div><div>🥇</div><div>🥈</div><div>🥉</div><div>🎗</div><div>🏵</div><div>🎫</div><div>🎟</div><div>🎭</div><div>🎨</div><div>🎪</div><div>🎤</div><div>🎧</div><div>🎼</div><div>🎹</div><div>🥁</div><div>🎷</div><div>🎺</div><div>🎸</div><div>🎻</div><div>🎬</div><div>🎮</div><div>👾</div><div>🎯</div><div>🎲</div><div>🎰</div><div>🎳</div>'
+            + '        </div>'
+            + '    </div>'
+            + '    <div class="icon-group">'
+            + '        <div class="icon-group-header"><div class="icon-group-header-title">travel and places</div></div>'
+            + '        <div class="icon-group-content">'
+            + '            <div>🚗</div><div>🚕</div><div>🚙</div><div>🚌</div><div>🚎</div><div>🏎</div><div>🚓</div><div>🚑</div><div>🚒</div><div>🚐</div><div>🚚</div><div>🚛</div><div>🚜</div><div>🛴</div><div>🏍</div><div>🚲</div><div>🛵</div><div>🚨</div><div>🚔</div><div>🚍</div><div>🚘</div><div>🚖</div><div>🚡</div><div>🚠</div><div>🚟</div><div>🚃</div><div>🚋</div><div>🚝</div><div>🚄</div><div>🚅</div><div>🚈</div><div>🚞</div><div>🚂</div><div>🚆</div><div>🚇</div><div>🚊</div><div>🚉</div><div>🚁</div><div>🛩</div><div>✈️</div><div>🛫</div><div>🛬</div><div>⛵</div><div>🛥</div><div>🚤</div><div>⛴</div><div>🛳</div><div>🚀</div><div>🛰</div><div>💺</div><div>🛶</div><div>⚓</div><div>🚧</div><div>⛽</div><div>🚏</div><div>🚦</div><div>🚥</div><div>🏁</div><div>🚢</div><div>🎡</div><div>🎢</div><div>🎠</div><div>🏗</div><div>🌁</div><div>🗼</div><div>🏭</div><div>⛲</div><div>🎑</div><div>⛰</div><div>🏔</div><div>🗻</div><div>🌋</div><div>🗾</div><div>🏕</div><div>⛺</div><div>🏞</div><div>🛣</div><div>🛤</div><div>🌅</div><div>🌄</div><div>🏜</div><div>🏖</div><div>🏝</div><div>🌇</div><div>🌆</div><div>🏙</div><div>🌃</div><div>🌉</div><div>🌌</div><div>🌠</div><div>🎇</div><div>🎆</div><div>🌈</div><div>🏘</div><div>🏰</div><div>🏯</div><div>🏟</div><div>🗽</div><div>🏠</div><div>🏡</div><div>🏚</div><div>🏢</div><div>🏬</div><div>🏣</div><div>🏤</div><div>🏥</div><div>🏦</div><div>🏨</div><div>🏪</div><div>🏫</div><div>🏩</div><div>💒</div><div>🏛</div><div>⛪</div><div>🕌</div><div>🕍</div><div>🕋</div><div>⛩</div>'
+            + '        </div>'
+            + '    </div>'
+            + '    <div class="icon-group">'
+            + '        <div class="icon-group-header"><div class="icon-group-header-title">objects</div></div>'
+            + '        <div class="icon-group-content">'
+            + '            <div>⌚</div><div>📱</div><div>📲</div><div>💻</div><div>⌨</div><div>🖥</div><div>🖨</div><div>🖱</div><div>🖲</div><div>🕹</div><div>🗜</div><div>💽</div><div>💾</div><div>💿</div><div>📀</div><div>📼</div><div>📷</div><div>📸</div><div>📹</div><div>🎥</div><div>📽</div><div>🎞</div><div>📞</div><div>☎️</div><div>📟</div><div>📠</div><div>📺</div><div>📻</div><div>🎙</div><div>🎚</div><div>🎛</div><div>⏱</div><div>⏲</div><div>⏰</div><div>🕰</div><div>⏳</div><div>⌛</div><div>📡</div><div>🔋</div><div>🔌</div><div>💡</div><div>🔦</div><div>🕯</div><div>🗑</div><div>🛢</div><div>💸</div><div>💵</div><div>💴</div><div>💶</div><div>💷</div><div>💰</div><div>💳</div><div>💎</div><div>⚖</div><div>🔧</div><div>🔨</div><div>⚒</div><div>🛠</div><div>⛏</div><div>🔩</div><div>⚙</div><div>⛓</div><div>🔫</div><div>💣</div><div>🔪</div><div>🗡</div><div>⚔</div><div>🛡</div><div>🚬</div><div>☠</div><div>⚰</div><div>⚱</div><div>🏺</div><div>🔮</div><div>📿</div><div>💈</div><div>⚗</div><div>🔭</div><div>🔬</div><div>🕳</div><div>💊</div><div>💉</div><div>🌡</div><div>🏷</div><div>🔖</div><div>🚽</div><div>🚿</div><div>🛁</div><div>🔑</div><div>🗝</div><div>🛋</div><div>🛌</div><div>🛏</div><div>🚪</div><div>🛎</div><div>🖼</div><div>🗺</div><div>⛱</div><div>🗿</div><div>🛍</div><div>🛒</div><div>🎈</div><div>🎏</div><div>🎀</div><div>🎁</div><div>🎊</div><div>🎉</div><div>🎎</div><div>🎐</div><div>🎌</div><div>🏮</div><div>✉️</div><div>📩</div><div>📨</div><div>📧</div><div>💌</div><div>📮</div><div>📪</div><div>📫</div><div>📬</div><div>📭</div><div>📦</div><div>📯</div><div>📥</div><div>📤</div><div>📜</div><div>📃</div><div>📑</div><div>📊</div><div>📈</div><div>📉</div><div>📄</div><div>📅</div><div>📆</div><div>🗓</div><div>📇</div><div>🗃</div><div>🗳</div><div>🗄</div><div>📋</div><div>🗒</div><div>📁</div><div>📂</div><div>🗂</div><div>🗞</div><div>📰</div><div>📓</div><div>📕</div><div>📗</div><div>📘</div><div>📙</div><div>📔</div><div>📒</div><div>📚</div><div>📖</div><div>🔗</div><div>📎</div><div>🖇</div><div>✂️</div><div>📐</div><div>📏</div><div>📌</div><div>📍</div><div>🚩</div><div>🏳</div><div>🏴</div><div>🏳️&zwj;🌈</div><div>🔐</div><div>🔒</div><div>🔓</div><div>🔏</div><div>🖊</div><div>🖋</div><div>✒️</div><div>📝</div><div>✏️</div><div>🖍</div><div>🖌</div><div>🔍</div><div>🔎</div>'
+            + '        </div>'
+            + '    </div>'
+            + '    <div class="icon-group">'
+            + '        <div class="icon-group-header"><div class="icon-group-header-title">symbols</div></div>'
+            + '        <div class="icon-group-content">'
+            + '            <div>💯</div><div>🔢</div><div>❤️</div><div>💛</div><div>💚</div><div>💙</div><div>💜</div><div>🖤</div><div>💔</div><div>❣</div><div>💕</div><div>💞</div><div>💓</div><div>💗</div><div>💖</div><div>💘</div><div>💝</div><div>💟</div><div>☮</div><div>✝</div><div>☪</div><div>🕉</div><div>☸</div><div>🔯</div><div>🕎</div><div>☯</div><div>☦</div><div>🛐</div><div>⛎</div><div>♈</div><div>♉</div><div>♊</div><div>♋</div><div>♌</div><div>♍</div><div>♎</div><div>♏</div><div>♐</div><div>♑</div><div>♒</div><div>♓</div><div>🆔</div><div>⚛</div><div>🈳</div><div>🈹</div><div>☢</div><div>☣</div><div>📴</div><div>📳</div><div>🈶</div><div>🈚</div><div>🈸</div><div>🈺</div><div>🈷️</div><div>✴️</div><div>🆚</div><div>🉑</div><div>💮</div><div>🉐</div><div>㊙️</div><div>㊗️</div><div>🈴</div><div>🈵</div><div>🈲</div><div>🅰️</div><div>🅱️</div><div>🆎</div><div>🆑</div><div>🅾️</div><div>🆘</div><div>⛔</div><div>📛</div><div>🚫</div><div>❌</div><div>⭕</div><div>🛑</div><div>💢</div><div>♨️</div><div>🚷</div><div>🚯</div><div>🚳</div><div>🚱</div><div>🔞</div><div>📵</div><div>❗</div><div>❕</div><div>❓</div><div>❔</div><div>‼️</div><div>⁉️</div><div>🔅</div><div>🔆</div><div>🔱</div><div>⚜</div><div>〽️</div><div>⚠️</div><div>🚸</div><div>🔰</div><div>♻️</div><div>🈯</div><div>💹</div><div>❇️</div><div>✳️</div><div>❎</div><div>✅</div><div>💠</div><div>�</div><div>➿</div><div>🌐</div><div>Ⓜ️</div><div>🏧</div><div>🈂️</div><div>🛂</div><div>🛃</div><div>🛄</div><div>🛅</div><div>♿</div><div>🚭</div><div>🚾</div><div>🅿️</div><div>🚰</div><div>🚹</div><div>🚺</div><div>🚼</div><div>🚻</div><div>🚮</div><div>🎦</div><div>📶</div><div>🈁</div><div>🆖</div><div>🆗</div><div>🆙</div><div>🆒</div><div>🆕</div><div>🆓</div><div>🔟</div><div>*⃣</div><div>▶️</div><div>⏸</div><div>⏭</div><div>⏹</div><div>⏺</div><div>⏯</div><div>⏮</div><div>⏩</div><div>⏪</div><div>�</div><div>🔁</div><div>🔂</div><div>◀️</div><div>🔼</div><div>🔽</div><div>⏫</div><div>⏬</div><div>➡️</div><div>⬅️</div><div>⬆️</div><div>⬇️</div><div>↗️</div><div>↘️</div><div>↙️</div><div>↖️</div><div>↕️</div><div>↔️</div><div>🔄</div><div>↪️</div><div>↩️</div><div>⤴️</div><div>⤵️</div><div>ℹ️</div><div>🔤</div><div>🔡</div><div>🔠</div><div>🔣</div><div>🎵</div><div>🎶</div><div>〰️</div><div>➰</div><div>✔️</div><div>🔃</div><div>➕</div><div>➖</div><div>➗</div><div>✖️</div><div>💲</div><div>💱</div><div>©️</div><div>®️</div><div>™️</div><div>🔚</div><div>🔙</div><div>🔛</div><div>🔝</div><div>🔜</div><div>☑️</div><div>🔘</div><div>⚪</div><div>⚫</div><div>🔴</div><div>🔵</div><div>🔸</div><div>🔹</div><div>🔶</div><div>🔷</div><div>🔺</div><div>▪️</div><div>▫️</div><div>⬛</div><div>⬜</div><div>🔻</div><div>◼️</div><div>◻️</div><div>◾</div><div>◽</div><div>🔲</div><div>🔳</div><div>🔈</div><div>🔉</div><div>🔊</div><div>🔇</div><div>📣</div><div>📢</div><div>🔔</div><div>🔕</div><div>🃏</div><div>🀄</div><div>♠️</div><div>♣️</div><div>♥️</div><div>♦️</div><div>🎴</div><div>💭</div><div>🗯</div><div>💬</div><div>🗨</div><div>🕐</div><div>🕑</div><div>🕒</div><div>🕓</div><div>🕔</div><div>🕕</div><div>🕖</div><div>🕗</div><div>🕘</div><div>🕙</div><div>🕚</div><div>🕛</div><div>🕜</div><div>🕝</div><div>🕞</div><div>🕟</div><div>🕠</div><div>🕡</div><div>🕢</div><div>🕣</div><div>🕤</div><div>🕥</div><div>🕦</div><div>🕧</div>'
+            + '        </div>'
+            + '    </div>'
+            + '    <div class="icon-group">'
+            + '        <div class="icon-group-header"><div class="icon-group-header-title">flags</div></div>'
+            + '        <div class="icon-group-content">'
+            + '            <div>🇦🇫</div><div>🇦🇽</div><div>🇦🇱</div><div>🇩🇿</div><div>🇦🇸</div><div>🇦🇩</div><div>🇦🇴</div><div>🇦🇮</div><div>🇦🇶</div><div>🇦🇬</div><div>🇦🇷</div><div>🇦🇲</div><div>🇦🇼</div><div>🇦🇺</div><div>🇦🇹</div><div>🇦🇿</div><div>🇧🇸</div><div>🇧🇭</div><div>🇧🇩</div><div>🇧🇧</div><div>🇧🇾</div><div>🇧🇪</div><div>🇧🇿</div><div>🇧🇯</div><div>🇧🇲</div><div>🇧🇹</div><div>🇧🇴</div><div>🇧🇶</div><div>🇧🇦</div><div>🇧🇼</div><div>🇧🇷</div><div>🇮🇴</div><div>🇻🇬</div><div>🇧🇳</div><div>🇧🇬</div><div>🇧🇫</div><div>🇧🇮</div><div>🇨🇻</div><div>🇰🇭</div><div>🇨🇲</div><div>🇨🇦</div><div>🇮🇨</div><div>🇰🇾</div><div>🇨🇫</div><div>🇹🇩</div><div>🇨🇱</div><div>🇨🇳</div><div>🇨🇽</div><div>🇨🇨</div><div>🇨🇴</div><div>🇰🇲</div><div>🇨🇬</div><div>🇨🇩</div><div>🇨🇰</div><div>🇨🇷</div><div>🇭🇷</div><div>🇨🇺</div><div>🇨🇼</div><div>🇨🇾</div><div>🇨🇿</div><div>🇩🇰</div><div>🇩🇯</div><div>🇩🇲</div><div>🇩🇴</div><div>🇪🇨</div><div>🇪🇬</div><div>🇸🇻</div><div>🇬🇶</div><div>🇪🇷</div><div>🇪🇪</div><div>🇪🇹</div><div>🇪🇺</div><div>🇫🇰</div><div>🇫🇴</div><div>🇫🇯</div><div>🇫🇮</div><div>🇫🇷</div><div>🇬🇫</div><div>🇵🇫</div><div>🇹🇫</div><div>🇬🇦</div><div>🇬🇲</div><div>🇬🇪</div><div>🇩🇪</div><div>🇬🇭</div><div>🇬🇮</div><div>🇬🇷</div><div>🇬🇱</div><div>🇬🇩</div><div>🇬🇵</div><div>🇬🇺</div><div>🇬🇹</div><div>🇬🇬</div><div>🇬🇳</div><div>🇬🇼</div><div>🇬🇾</div><div>🇭🇹</div><div>🇭🇳</div><div>🇭🇰</div><div>🇭🇺</div><div>🇮🇸</div><div>🇮🇳</div><div>🇮🇩</div><div>🇮🇷</div><div>🇮🇶</div><div>🇮🇪</div><div>🇮🇲</div><div>🇮🇱</div><div>🇮🇹</div><div>🇨🇮</div><div>🇯🇲</div><div>🇯🇵</div><div>🇯🇪</div><div>🇯🇴</div><div>🇰🇿</div><div>🇰🇪</div><div>🇰🇮</div><div>🇽🇰</div><div>🇰🇼</div><div>🇰🇬</div><div>🇱🇦</div><div>🇱🇻</div><div>🇱🇧</div><div>🇱🇸</div><div>🇱🇷</div><div>🇱🇾</div><div>🇱🇮</div><div>🇱🇹</div><div>🇱🇺</div><div>🇲🇴</div><div>🇲🇰</div><div>🇲🇬</div><div>🇲🇼</div><div>🇲🇾</div><div>🇲🇻</div><div>🇲🇱</div><div>🇲🇹</div><div>🇲🇭</div><div>🇲🇶</div><div>🇲🇷</div><div>🇲🇺</div><div>🇾🇹</div><div>🇲🇽</div><div>🇫🇲</div><div>🇲🇩</div><div>🇲🇨</div><div>🇲🇳</div><div>🇲🇪</div><div>🇲🇸</div><div>🇲🇦</div><div>🇲🇿</div><div>🇲🇲</div><div>🇳🇦</div><div>🇳🇷</div><div>🇳🇵</div><div>🇳🇱</div><div>🇳🇨</div><div>🇳🇿</div><div>🇳🇮</div><div>🇳🇪</div><div>🇳🇬</div><div>🇳🇺</div><div>🇳🇫</div><div>🇲🇵</div><div>🇰🇵</div><div>🇳🇴</div><div>🇴🇲</div><div>🇵🇰</div><div>🇵🇼</div><div>🇵🇸</div><div>🇵🇦</div><div>🇵🇬</div><div>🇵🇾</div><div>🇵🇪</div><div>🇵🇭</div><div>🇵🇳</div><div>🇵🇱</div><div>🇵🇹</div><div>🇵🇷</div><div>🇶🇦</div><div>🇷🇪</div><div>🇷🇴</div><div>🇷🇺</div><div>🇷🇼</div><div>🇧🇱</div><div>🇸🇭</div><div>🇰🇳</div><div>🇱🇨</div><div>🇵🇲</div><div>🇻🇨</div><div>🇼🇸</div><div>🇸🇲</div><div>🇸🇹</div><div>🇸🇦</div><div>🇸🇳</div><div>🇷🇸</div><div>🇸🇨</div><div>🇸🇱</div><div>🇸🇬</div><div>🇸🇽</div><div>🇸🇰</div><div>🇸🇮</div><div>🇸🇧</div><div>🇸🇴</div><div>🇿🇦</div><div>🇬🇸</div><div>🇰🇷</div><div>🇸🇸</div><div>🇪🇸</div><div>🇱🇰</div><div>🇸🇩</div><div>🇸🇷</div><div>🇸🇿</div><div>🇸🇪</div><div>🇨🇭</div><div>🇸🇾</div><div>🇹🇼</div><div>🇹🇯</div><div>🇹🇿</div><div>🇹🇭</div><div>🇹🇱</div><div>🇹🇬</div><div>🇹🇰</div><div>🇹🇴</div><div>🇹🇹</div><div>🇹🇳</div><div>🇹🇷</div><div>🇹🇲</div><div>🇹🇨</div><div>🇹🇻</div><div>🇺🇬</div><div>🇺🇦</div><div>🇦🇪</div><div>🇬🇧</div><div>🇺🇸</div><div>🇻🇮</div><div>🇺🇾</div><div>🇺🇿</div><div>🇻🇺</div><div>🇻🇦</div><div>🇻🇪</div><div>🇻🇳</div><div>🇼🇫</div><div>🇪🇭</div><div>🇾🇪</div><div>🇿🇲</div>'
+            + '        </div>'
+            + '    </div>'
+            + '</div>';
     }
 }
 
