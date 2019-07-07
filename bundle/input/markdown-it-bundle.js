@@ -32,7 +32,6 @@ import 'highlight.js';
 import 'chart.js';
 
 /* markdown-it */
-import mdTaskLists    from 'markdown-it-task-lists/index.js';
 import mdPlantUml     from 'markdown-it-plantuml/index.js';
 import mdAbbr         from 'markdown-it-abbr/index.js';
 import mdAnchor       from 'markdown-it-anchor/dist/markdownItAnchor.js';
