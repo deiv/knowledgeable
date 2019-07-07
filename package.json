@@ -1,8 +1,8 @@
 {
   "name": "knowledgeable",
   "version": "0.1.0",
-  "license": "GPL-3",
-  "repository": "",
+  "license": "GPLv3",
+  "repository": "https://github.com/deiv/knowledgeable",
   "scripts": {
     "start": "polymer serve",
     "build": "polymer build --auto-base-path && gulp prpl-server",
