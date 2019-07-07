@@ -135,6 +135,7 @@ class MyApp extends connect(store)(LitElement) {
           cursor: pointer;
           height: 44px;
           width: 44px;
+          position: absolute; /* allow center the page title */
         }
         
         app-drawer {
