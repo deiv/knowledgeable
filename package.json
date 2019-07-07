@@ -5,8 +5,8 @@
   "repository": "https://github.com/deiv/knowledgeable",
   "scripts": {
     "start": "polymer serve",
-    "build": "polymer build --auto-base-path && gulp prpl-server",
-    "build:static": "polymer build",
+    "build": "rollup -c && polymer build --auto-base-path && gulp prpl-server",
+    "build:static": "rollup -c && polymer build",
     "serve": "prpl-server --root server/build",
     "serve:static": "polymer serve --port 5000 build/es5-bundled",
     "bundle": "rollup -c"
