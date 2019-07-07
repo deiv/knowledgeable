@@ -86,18 +86,6 @@ export class MarkdownEditorElement extends LitElement {
                     clear: both;
                 }
                 
-                .source {
-                    width: 49%;
-                    height: 100%;
-                    float: left;
-                }
-
-                .result-html {
-                    width: 49%;
-                    height: 100%;
-                    float: right;
-                    overflow-x: auto;
-                    overflow-y: scroll;
                 .tui-add-icon {
                     background: url(../../../images/editor/add-icon.png);
                     background-size: 14px 14px;
