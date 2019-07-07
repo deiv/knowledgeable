@@ -34,15 +34,18 @@ import {
     mdAbbr,
     mdAnchor,
     mdRegex,
-    mdFontAwesome,
     mdMark,
     mdSup,
     mdTocDoneRight,
     mdContainer,
-    mdFootnote
+    mdFootnote,
+    mdPdf,
+    mdVideo,
+    mdCenter
 } from '../../../bundle/output/markdown-it-bundle.js';
 
 import { default as mdCharts } from 'markdown-it-chart/src/index.js';
+
 
 export class MarkdownEditorElement extends LitElement {
 
@@ -69,8 +72,6 @@ export class MarkdownEditorElement extends LitElement {
 
     render() {
         return html`
-            <!-- XXX: 
-            <link href="node_modules/@fortawesome/fontawesome-free/css/all.css" rel="stylesheet" />-->
             <link href="../../../node_modules/tui-editor/dist/tui-editor.css" rel="stylesheet" />
             <!--<link href="../../../node_modules/tui-editor/dist/tui-editor-contents.css" rel="stylesheet" />-->
             <link href="../../../static/css/markdown-it-style.css" rel="stylesheet" />
@@ -111,7 +112,8 @@ export class MarkdownEditorElement extends LitElement {
             language: 'es_ES',
             usageStatistics: false,
             hideModeSwitch: true,
-            exts: ['chart', 'scrollSync', 'colorSyntax']/*,
+            exts: ['chart', 'scrollSync', 'colorSyntax']
+            /*,
             hooks: {
                 previewBeforeHook(content) {
                     console.log(content);
@@ -122,17 +124,24 @@ export class MarkdownEditorElement extends LitElement {
         const highlightRenderer = this.editor.convertor.constructor.getMarkdownitHighlightRenderer();
         const itRenderer = this.editor.convertor.constructor.getMarkdownitRenderer();
 
-       // highlightRenderer.use(mdTaskLists);
         highlightRenderer.use(mdAbbr);
         highlightRenderer.use(mdAnchor);
         highlightRenderer.use(mdRegex);
-        highlightRenderer.use(mdFontAwesome);
         //highlightRenderer.use(mdImSize);
         highlightRenderer.use(mdMark);
         highlightRenderer.use(mdSup);
         highlightRenderer.use(mdTocDoneRight);
         highlightRenderer.use(mdFootnote);
         highlightRenderer.use(mdCharts);
+        highlightRenderer.use(mdPdf, {showUrl: false});
+        //highlightRenderer.use(mdCenter);
+
+        /*highlightRenderer.use(mdVideo, {
+            youtube: { width: 640, height: 390 },
+            vimeo: { width: 500, height: 281 },
+            vine: { width: 600, height: 600, embed: 'simple' },
+            prezi: { width: 550, height: 400 }
+        });*/
 
         highlightRenderer.use( mdPlantUml, {
             imageFormat: 'svg'
@@ -177,18 +186,24 @@ export class MarkdownEditorElement extends LitElement {
             }
         });
 
-
-        //itRenderer.use(mdTaskLists);
         itRenderer.use(mdAbbr);
         itRenderer.use(mdAnchor);
         itRenderer.use(mdRegex);
-        itRenderer.use(mdFontAwesome);
         //itRenderer.use(mdImSize);
         itRenderer.use(mdMark);
         itRenderer.use(mdSup);
         itRenderer.use(mdTocDoneRight);
         itRenderer.use(mdFootnote);
         itRenderer.use(mdCharts);
+        itRenderer.use(mdPdf, {showUrl: false});
+        //itRenderer.use(mdCenter);
+
+        /*itRenderer.use(mdVideo, {
+            youtube: { width: 640, height: 390 },
+            vimeo: { width: 500, height: 281 },
+            vine: { width: 600, height: 600, embed: 'simple' },
+            prezi: { width: 550, height: 400 }
+        });*/
 
         itRenderer.use( mdPlantUml, {
             imageFormat: 'svg'

@@ -37,12 +37,14 @@ import mdPlantUml     from 'markdown-it-plantuml/index.js';
 import mdAbbr         from 'markdown-it-abbr/index.js';
 import mdAnchor       from 'markdown-it-anchor/dist/markdownItAnchor.js';
 import mdRegex        from 'markdown-it-regexp/index.js';
-import mdFontAwesome  from 'markdown-it-fontawesome/index.js';
 import mdMark         from 'markdown-it-mark/index.js';
 import mdSup          from 'markdown-it-sup/index.js';
 import mdTocDoneRight from 'markdown-it-toc-done-right/dist/markdownItTocDoneRight.js';
 import mdContainer    from 'markdown-it-container/index.js';
 import mdFootnote     from 'markdown-it-footnote/index.js';
+import mdPdf          from 'markdown-it-pdf/index.js';
+import mdVideo        from 'markdown-it-video/index.js';
+import mdCenter       from 'markdown-it-center-text/index.js';
 //import mdImSize  from 'markdown-it-imsize/lib/index.js';
 
 export {
@@ -51,10 +53,12 @@ export {
     mdAbbr,
     mdAnchor,
     mdRegex,
-    mdFontAwesome,
     mdMark,
     mdSup,
     mdTocDoneRight,
     mdContainer,
-    mdFootnote
+    mdFootnote,
+    mdPdf,
+    mdVideo,
+    mdCenter
 };
